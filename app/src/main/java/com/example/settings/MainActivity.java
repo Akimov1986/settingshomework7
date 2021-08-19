@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -30,18 +31,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         readSettings();
         initToolbar();
-        initDrawer();
+        initDrawer(initToolbar());
     }
 
-    private void initToolbar() {
+    private Toolbar initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        return toolbar;
 
     }
 
-    private void initDrawer() {
+    private void initDrawer(Toolbar toolbar) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        //ActionBarDrawerToggle
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,
+                drawerLayout, toolbar,R.string.add,R.string.app_name);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         NavigationView navigationView= findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         showFragment(SettingsFragment.newInstance());
                         break;
                 }
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return false;
             }
         });
